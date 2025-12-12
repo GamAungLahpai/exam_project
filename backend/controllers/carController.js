@@ -52,9 +52,9 @@ const getCarById = async (req, res) => {
 const deleteCar = async (req, res) => {
   const { id } = req.params;
   try {
-    // const user_id = req.user._id;
-    // const car = await Car.findByIdAndDelete({ _id: id, user_id: user_id });
-    const car = await Car.findByIdAndDelete({ _id: id,});
+    const user_id = req.user._id;
+    // Only update if the car belongs to the current user
+    const car = await Car.findByIdAndDelete({ _id: id, user_id: user_id });
     if (!car) {
       return res.status(404).json({ message: 'Car not found' });
     }
@@ -69,9 +69,10 @@ const deleteCar = async (req, res) => {
 const updateCar = async (req, res) => {
   const { id } = req.params;
   try {
-    // const user_id = req.user._id;
+    const user_id = req.user._id;
+    // Only update if the car belongs to the current user
     const car = await Car.findOneAndUpdate(
-      // { _id: id, user_id: user_id },
+      { _id: id, user_id: user_id },
       { _id: id,  },
       { ...req.body },
       { new: true }
