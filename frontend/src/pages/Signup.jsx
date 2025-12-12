@@ -8,16 +8,19 @@ const Signup = ({ setIsAuthenticated }) => {
   const email = useField("email");
   const password = useField("password");
 
-  const { signup, error } = useSignup("/api/users/signup");
+  const { signup, isLoading, error } = useSignup("/api/users/signup");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    await signup({
+    
+    const result = await signup({
       email: email.value,
       password: password.value,
       name: name.value,
     });
-    if (!error) {
+
+
+    if (result.success) {
       console.log("success");
       setIsAuthenticated(true);
       navigate("/");
@@ -34,7 +37,22 @@ const Signup = ({ setIsAuthenticated }) => {
         <input {...email} />
         <label>Password:</label>
         <input {...password} />
-        <button>Sign up</button>
+        <button disabled={isLoading}>
+          {isLoading ? "Signing up..." : "Sign up"}
+        </button>
+        
+        {error && (
+          <div className="error" style={{ 
+            color: 'red', 
+            marginTop: '10px',
+            padding: '10px',
+            border: '1px solid red',
+            borderRadius: '4px',
+            backgroundColor: '#ffebee'
+          }}>
+            {error}
+          </div>
+        )}
       </form>
     </div>
   );
